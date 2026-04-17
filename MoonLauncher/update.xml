@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<item>
+	<version>1.0.0.0</version>
+	<url>http://your-server.com/downloads/MyApp_v1.1.zip</url>
+	<mandatory>false</mandatory>
+</item>
