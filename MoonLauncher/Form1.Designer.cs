@@ -37,11 +37,12 @@
             btnSettings = new Button();
             btnSaveNickname = new Button();
             cmbVersion = new ComboBox();
+            statusLabel = new Label();
             SuspendLayout();
             // 
             // btnPlay
             // 
-            btnPlay.Location = new Point(37, 153);
+            btnPlay.Location = new Point(37, 174);
             btnPlay.Name = "btnPlay";
             btnPlay.Size = new Size(237, 96);
             btnPlay.TabIndex = 0;
@@ -78,7 +79,7 @@
             // 
             // progressBar
             // 
-            progressBar.Location = new Point(72, 124);
+            progressBar.Location = new Point(72, 140);
             progressBar.Name = "progressBar";
             progressBar.Size = new Size(170, 23);
             progressBar.TabIndex = 4;
@@ -123,11 +124,22 @@
             cmbVersion.Size = new Size(100, 23);
             cmbVersion.TabIndex = 8;
             // 
+            // statusLabel
+            // 
+            statusLabel.AutoSize = true;
+            statusLabel.Location = new Point(72, 122);
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(38, 15);
+            statusLabel.TabIndex = 9;
+            statusLabel.Text = "label1";
+            statusLabel.Visible = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(317, 282);
+            Controls.Add(statusLabel);
             Controls.Add(cmbVersion);
             Controls.Add(btnSaveNickname);
             Controls.Add(btnSettings);
@@ -157,5 +169,6 @@
         private Button btnSettings;
         private Button btnSaveNickname;
         private ComboBox cmbVersion;
+        private Label statusLabel;
     }
 }
