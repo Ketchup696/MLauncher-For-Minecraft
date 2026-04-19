@@ -10,6 +10,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace MoonLauncher
@@ -45,6 +46,21 @@ namespace MoonLauncher
         {
             var path = new MinecraftPath(gameDir);
             _launcher = new MinecraftLauncher(path);
+
+            _launcher.FileProgressChanged += _launcher_FileProgressChanged;
+        }
+
+        private void _launcher_FileProgressChanged(object? sender, CmlLib.Core.Installers.InstallerProgressChangedEventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => _launcher_FileProgressChanged(sender, e)));
+                return;
+            }
+
+            progressBar.Maximum = e.TotalTasks;
+            progressBar.Value = e.ProgressedTasks;
+            statusLabel.Text = $"File: {e.Name}";
         }
 
         private void LoadSettings()
@@ -96,6 +112,18 @@ namespace MoonLauncher
                 .ToList();
             cmbVersion.DataSource = releaseVersions;
 
+            if(!string.IsNullOrEmpty(_settings.LastVersion) && releaseVersions.Contains(_settings.LastVersion))
+            {
+                cmbVersion.SelectedItem = _settings.LastVersion;
+            }
+            else
+            {
+                if(releaseVersions.Count > 0)
+                {
+                    cmbVersion.SelectedIndex = 0;
+                }
+            }
+
             btnPlay.Enabled = true;
         }
 
@@ -108,7 +136,7 @@ namespace MoonLauncher
         {
             btnPlay.Enabled = false;
             progressBar.Visible = true;
-            progressBar.Style = ProgressBarStyle.Marquee;
+            statusLabel.Visible = true;
 
             try
             {
@@ -116,12 +144,21 @@ namespace MoonLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorText = ex.ToString();
+                if(errorText.Contains("Java", StringComparison.OrdinalIgnoreCase) || errorText.Contains("runtime", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show($"Error java. Press Start again.", "Error java", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             finally
             {
                 btnPlay.Enabled = true;
                 progressBar.Visible = false;
+                statusLabel.Visible = false;
             }
         }
 

@@ -38,6 +38,8 @@
             btnSaveNickname = new Button();
             cmbVersion = new ComboBox();
             statusLabel = new Label();
+            btnDeleteVersion = new Button();
+            labelLastVersion = new Label();
             SuspendLayout();
             // 
             // btnPlay
@@ -53,7 +55,7 @@
             // LabelGameVersion
             // 
             LabelGameVersion.AutoSize = true;
-            LabelGameVersion.Location = new Point(29, 55);
+            LabelGameVersion.Location = new Point(26, 50);
             LabelGameVersion.Name = "LabelGameVersion";
             LabelGameVersion.Size = new Size(82, 15);
             LabelGameVersion.TabIndex = 1;
@@ -88,7 +90,7 @@
             // NameLauncher
             // 
             NameLauncher.AutoSize = true;
-            NameLauncher.Location = new Point(83, 21);
+            NameLauncher.Location = new Point(83, 13);
             NameLauncher.Name = "NameLauncher";
             NameLauncher.Size = new Size(145, 15);
             NameLauncher.TabIndex = 5;
@@ -99,7 +101,7 @@
             btnSettings.FlatAppearance.BorderSize = 0;
             btnSettings.FlatStyle = FlatStyle.Flat;
             btnSettings.Image = Properties.Resources.IconSettingsMoonLauncher_32x32;
-            btnSettings.Location = new Point(269, 13);
+            btnSettings.Location = new Point(273, 4);
             btnSettings.Name = "btnSettings";
             btnSettings.Size = new Size(32, 32);
             btnSettings.TabIndex = 6;
@@ -119,7 +121,7 @@
             // cmbVersion
             // 
             cmbVersion.FormattingEnabled = true;
-            cmbVersion.Location = new Point(111, 50);
+            cmbVersion.Location = new Point(111, 42);
             cmbVersion.Name = "cmbVersion";
             cmbVersion.Size = new Size(100, 23);
             cmbVersion.TabIndex = 8;
@@ -127,18 +129,38 @@
             // statusLabel
             // 
             statusLabel.AutoSize = true;
-            statusLabel.Location = new Point(72, 122);
+            statusLabel.Location = new Point(12, 123);
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(38, 15);
             statusLabel.TabIndex = 9;
             statusLabel.Text = "label1";
             statusLabel.Visible = false;
             // 
+            // btnDeleteVersion
+            // 
+            btnDeleteVersion.Location = new Point(223, 42);
+            btnDeleteVersion.Name = "btnDeleteVersion";
+            btnDeleteVersion.Size = new Size(51, 23);
+            btnDeleteVersion.TabIndex = 10;
+            btnDeleteVersion.Text = "Delete";
+            btnDeleteVersion.UseVisualStyleBackColor = true;
+            // 
+            // labelLastVersion
+            // 
+            labelLastVersion.AutoSize = true;
+            labelLastVersion.Location = new Point(36, 70);
+            labelLastVersion.Name = "labelLastVersion";
+            labelLastVersion.Size = new Size(72, 15);
+            labelLastVersion.TabIndex = 11;
+            labelLastVersion.Text = "Last version:";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(317, 282);
+            Controls.Add(labelLastVersion);
+            Controls.Add(btnDeleteVersion);
             Controls.Add(statusLabel);
             Controls.Add(cmbVersion);
             Controls.Add(btnSaveNickname);
@@ -170,5 +192,7 @@
         private Button btnSaveNickname;
         private ComboBox cmbVersion;
         private Label statusLabel;
+        private Button btnDeleteVersion;
+        private Label labelLastVersion;
     }
 }
