@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             btnPlay = new Button();
             LabelGameVersion = new Label();
             labelSavedNicknames = new Label();
@@ -42,6 +43,7 @@
             labelNewNickname = new Label();
             btnDeleteNickname = new Button();
             btnDeleteVersion = new Button();
+            btnGameDir = new Button();
             SuspendLayout();
             // 
             // btnPlay
@@ -175,11 +177,24 @@
             btnDeleteVersion.UseVisualStyleBackColor = true;
             btnDeleteVersion.Click += btnDeleteVersion_Click;
             // 
+            // btnGameDir
+            // 
+            btnGameDir.FlatAppearance.BorderSize = 0;
+            btnGameDir.FlatStyle = FlatStyle.Flat;
+            btnGameDir.Image = Properties.Resources.Folder;
+            btnGameDir.Location = new Point(239, 4);
+            btnGameDir.Name = "btnGameDir";
+            btnGameDir.Size = new Size(32, 32);
+            btnGameDir.TabIndex = 14;
+            btnGameDir.UseVisualStyleBackColor = true;
+            btnGameDir.Click += btnGameDir_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(317, 282);
+            Controls.Add(btnGameDir);
             Controls.Add(btnDeleteVersion);
             Controls.Add(btnDeleteNickname);
             Controls.Add(labelNewNickname);
@@ -195,9 +210,10 @@
             Controls.Add(LabelGameVersion);
             Controls.Add(btnPlay);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "Form1";
-            Text = "Form1";
+            Text = "MoonLauncher";
             Load += Form1_Load;
             ResumeLayout(false);
             PerformLayout();
@@ -219,5 +235,6 @@
         private Label labelNewNickname;
         private Button btnDeleteNickname;
         private Button btnDeleteVersion;
+        private Button btnGameDir;
     }
 }

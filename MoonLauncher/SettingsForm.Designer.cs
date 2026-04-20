@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
             labelSettings = new Label();
             LabelRAM = new Label();
             numMemory = new NumericUpDown();
@@ -106,9 +107,10 @@
             Controls.Add(LabelRAM);
             Controls.Add(labelSettings);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "SettingsForm";
-            Text = "SettingsForm";
+            Text = "Settings";
             ((System.ComponentModel.ISupportInitialize)numMemory).EndInit();
             ResumeLayout(false);
             PerformLayout();
