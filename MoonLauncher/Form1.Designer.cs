@@ -151,11 +151,11 @@
             // labelNewNickname
             // 
             labelNewNickname.AutoSize = true;
-            labelNewNickname.Location = new Point(45, 80);
+            labelNewNickname.Location = new Point(19, 81);
             labelNewNickname.Name = "labelNewNickname";
-            labelNewNickname.Size = new Size(38, 15);
+            labelNewNickname.Size = new Size(89, 15);
             labelNewNickname.TabIndex = 11;
-            labelNewNickname.Text = "label1";
+            labelNewNickname.Text = "New nickname:";
             // 
             // btnDeleteNickname
             // 
