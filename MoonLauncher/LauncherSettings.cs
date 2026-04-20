@@ -9,5 +9,6 @@ namespace MoonLauncher
         public int AllocatedMemoryGB { get; set; } = 4;
         public string LastNickname { get; set; } = "";
         public string LastVersion { get; set; } = "";
+        public List<string> SavedNicknames { get; set; } = new List<string>();
     }
 }

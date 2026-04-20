@@ -7,8 +7,10 @@ using CmlLib.Core.VersionMetadata;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -17,7 +19,7 @@ namespace MoonLauncher
 {
     public partial class Form1 : Form
     {
-
+        private string defaultNickname = "Player";
         private LauncherSettings _settings;
         private readonly string _settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoonLauncher");
         private readonly string _settingsFile;
@@ -80,14 +82,20 @@ namespace MoonLauncher
                 _settings = new LauncherSettings();
             }
 
-            if (!string.IsNullOrEmpty(_settings.LastNickname))
+            if (_settings.SavedNicknames == null)
             {
-                txtNickname.Text = _settings.LastNickname;
+                _settings.SavedNicknames = new List<string>();
+                _settings.SavedNicknames.Add(defaultNickname);
+                SaveSettings();
             }
-            else
+            else if (_settings.SavedNicknames.Count == 0)
             {
-                txtNickname.Text = "Player";
-            }   
+                _settings.SavedNicknames.Add(defaultNickname);
+                SaveSettings();
+            }
+
+            cmbNicknames.DataSource = _settings.SavedNicknames;
+            cmbNicknames.SelectedItem = _settings.LastNickname;
         }
 
         private void SaveSettings()
@@ -102,7 +110,7 @@ namespace MoonLauncher
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            AutoUpdater.Start("https://raw.githubusercontent.com/Ketchup696/MLauncher-For-Minecraft/refs/heads/master/MoonLauncher/update.xml");
+            AutoUpdater.Start("https://raw.githubusercontent.com/Ketchup696/MLauncher-For-Minecraft/refs/heads/master/update.xml");
 
             var launcher = _launcher;
             var allVersions = await launcher.GetAllVersionsAsync();
@@ -112,13 +120,13 @@ namespace MoonLauncher
                 .ToList();
             cmbVersion.DataSource = releaseVersions;
 
-            if(!string.IsNullOrEmpty(_settings.LastVersion) && releaseVersions.Contains(_settings.LastVersion))
+            if (!string.IsNullOrEmpty(_settings.LastVersion) && releaseVersions.Contains(_settings.LastVersion))
             {
                 cmbVersion.SelectedItem = _settings.LastVersion;
             }
             else
             {
-                if(releaseVersions.Count > 0)
+                if (releaseVersions.Count > 0)
                 {
                     cmbVersion.SelectedIndex = 0;
                 }
@@ -129,7 +137,7 @@ namespace MoonLauncher
 
         private void GameVersion_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private async void btnPlay_Click(object sender, EventArgs e)
@@ -138,14 +146,17 @@ namespace MoonLauncher
             progressBar.Visible = true;
             statusLabel.Visible = true;
 
+            _settings.LastNickname = cmbNicknames.Text;
+            SaveSettings();
+
             try
             {
-                await LaunchMinecraftAsync(txtNickname.Text);
+                await LaunchMinecraftAsync(cmbNicknames.Text);
             }
             catch (Exception ex)
             {
                 string errorText = ex.ToString();
-                if(errorText.Contains("Java", StringComparison.OrdinalIgnoreCase) || errorText.Contains("runtime", StringComparison.OrdinalIgnoreCase))
+                if (errorText.Contains("Java", StringComparison.OrdinalIgnoreCase) || errorText.Contains("runtime", StringComparison.OrdinalIgnoreCase))
                 {
                     MessageBox.Show($"Error java. Press Start again.", "Error java", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -181,6 +192,9 @@ namespace MoonLauncher
             var process = await _launcher.InstallAndBuildProcessAsync(version, launchOption);
 
             process.Start();
+            this.Hide();
+            await process.WaitForExitAsync();
+            this.Show();
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -197,15 +211,84 @@ namespace MoonLauncher
 
         private void btnSaveNickname_Click(object sender, EventArgs e)
         {
-            string nickname = txtNickname.Text.Trim();
+            string txtNickname = txtNewNickname.Text;
 
-            if (string.IsNullOrEmpty(nickname))
+            if (string.IsNullOrWhiteSpace(txtNickname))
             {
-                nickname = "Player";
+                cmbNicknames.SelectedItem = defaultNickname;
             }
-
-            _settings.LastNickname = nickname;
+            else
+            {
+                if (txtNickname != null && !_settings.SavedNicknames.Contains(txtNickname))
+                {
+                    _settings.SavedNicknames.Add(txtNickname);
+                }
+            }
             SaveSettings();
+            cmbNicknames.DataSource = null;
+            cmbNicknames.DataSource = _settings.SavedNicknames;
+        }
+
+        private void btnGameDir_Click(object sender, EventArgs e)
+        {
+            if (!System.IO.Directory.Exists(gameDir))
+            {
+                MessageBox.Show($"Directory not found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                Process.Start("explorer.exe", gameDir);
+            }
+        }
+
+        private void btnDeleteNickname_Click(object sender, EventArgs e)
+        {
+            DialogResult resultDeleteNickname = MessageBox.Show($"Are you sure you want to delete this account?", "Deleting a account", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultDeleteNickname == DialogResult.Yes)
+            {
+                string selectNickname = cmbNicknames.Text;
+                if (_settings.SavedNicknames.Contains(selectNickname))
+                {
+                    _settings.SavedNicknames.Remove(selectNickname);
+
+                    if (_settings.SavedNicknames.Count == 0)
+                    {
+                        _settings.SavedNicknames.Add(defaultNickname);
+                    }
+
+                    SaveSettings();
+                    cmbNicknames.DataSource = null;
+                    cmbNicknames.DataSource = _settings.SavedNicknames;
+                }
+            }
+        }
+
+        private void btnDeleteVersion_Click(object sender, EventArgs e)
+        {
+            DialogResult resultDeleteVersion = MessageBox.Show($"Are you sure you want to delete this version?", "Deleting a version", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (resultDeleteVersion == DialogResult.Yes)
+            {
+                string folderVersions = Path.Combine(gameDir, "versions");
+                string deleteVersion = cmbVersion.Text;
+                string folderDeleteVersion = Path.Combine(folderVersions, deleteVersion);
+                try
+                {
+                    Directory.Delete(folderDeleteVersion, recursive: true);
+                    MessageBox.Show($"This version has been successfully deleted", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    MessageBox.Show($"Folder not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show($"Not enough rights.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+}
