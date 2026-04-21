@@ -4,6 +4,7 @@ using CmlLib.Core.Auth;
 using CmlLib.Core.ProcessBuilder;
 using CmlLib.Core.Version;
 using CmlLib.Core.VersionMetadata;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,12 +15,14 @@ using System.Runtime;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Net.NetworkInformation;
 
 namespace MoonLauncher
 {
     public partial class Form1 : Form
     {
         private string defaultNickname = "Player";
+
         private LauncherSettings _settings;
         private readonly string _settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoonLauncher");
         private readonly string _settingsFile;
@@ -95,7 +98,7 @@ namespace MoonLauncher
             }
 
             cmbNicknames.DataSource = _settings.SavedNicknames;
-            cmbNicknames.SelectedItem = _settings.LastNickname;
+            cmbNicknames.Text = _settings.LastNickname;
         }
 
         private void SaveSettings()
@@ -112,32 +115,41 @@ namespace MoonLauncher
         {
             AutoUpdater.Start("https://raw.githubusercontent.com/Ketchup696/MLauncher-For-Minecraft/refs/heads/master/update.xml");
 
-            var launcher = _launcher;
-            var allVersions = await launcher.GetAllVersionsAsync();
-            var releaseVersions = allVersions
+            LoadVersionListAsync();
+        }
+
+        private async void LoadVersionListAsync()
+        {
+            try
+            {
+                var launcher = _launcher;
+                var allVersions = await launcher.GetAllVersionsAsync();
+                var releaseVersions = allVersions
                 .Where(v => v.Type == "release")
                 .Select(v => v.Name)
                 .ToList();
-            cmbVersion.DataSource = releaseVersions;
+                cmbVersion.DataSource = releaseVersions;
 
-            if (!string.IsNullOrEmpty(_settings.LastVersion) && releaseVersions.Contains(_settings.LastVersion))
-            {
-                cmbVersion.SelectedItem = _settings.LastVersion;
-            }
-            else
-            {
-                if (releaseVersions.Count > 0)
+                if (!string.IsNullOrEmpty(_settings.LastVersion) && releaseVersions.Contains(_settings.LastVersion))
                 {
-                    cmbVersion.SelectedIndex = 0;
+                    cmbVersion.SelectedItem = _settings.LastVersion;
+                }
+                else
+                {
+                    if (releaseVersions.Count > 0)
+                    {
+                        cmbVersion.SelectedIndex = 0;
+                    }
                 }
             }
-
-            btnPlay.Enabled = true;
-        }
-
-        private void GameVersion_Click(object sender, EventArgs e)
-        {
-
+            catch
+            {
+                MessageBox.Show($"Failed to retrieve versions. Please check your internet connection and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnPlay.Enabled = true;
+            }
         }
 
         private async void btnPlay_Click(object sender, EventArgs e)
@@ -209,24 +221,23 @@ namespace MoonLauncher
             }
         }
 
-        private void btnSaveNickname_Click(object sender, EventArgs e)
+        private void btnAccountManagement_Click(object sender, EventArgs e)
         {
-            string txtNickname = txtNewNickname.Text;
-
-            if (string.IsNullOrWhiteSpace(txtNickname))
+            using (var accountManagment = new AccountManagment(_settings))
             {
-                cmbNicknames.SelectedItem = defaultNickname;
-            }
-            else
-            {
-                if (txtNickname != null && !_settings.SavedNicknames.Contains(txtNickname))
+                if(accountManagment.ShowDialog(this) == DialogResult.OK)
                 {
-                    _settings.SavedNicknames.Add(txtNickname);
+                    _settings = accountManagment.Settings;
+                    SaveSettings();
+                    string nullNickname = cmbNicknames.Text;
+                    if (string.IsNullOrEmpty(nullNickname))
+                    {
+                        cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
+                    }
+                    cmbNicknames.DataSource = null;
+                    cmbNicknames.DataSource = _settings.SavedNicknames;
                 }
             }
-            SaveSettings();
-            cmbNicknames.DataSource = null;
-            cmbNicknames.DataSource = _settings.SavedNicknames;
         }
 
         private void btnGameDir_Click(object sender, EventArgs e)
@@ -238,28 +249,6 @@ namespace MoonLauncher
             else
             {
                 Process.Start("explorer.exe", gameDir);
-            }
-        }
-
-        private void btnDeleteNickname_Click(object sender, EventArgs e)
-        {
-            DialogResult resultDeleteNickname = MessageBox.Show($"Are you sure you want to delete this account?", "Deleting a account", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (resultDeleteNickname == DialogResult.Yes)
-            {
-                string selectNickname = cmbNicknames.Text;
-                if (_settings.SavedNicknames.Contains(selectNickname))
-                {
-                    _settings.SavedNicknames.Remove(selectNickname);
-
-                    if (_settings.SavedNicknames.Count == 0)
-                    {
-                        _settings.SavedNicknames.Add(defaultNickname);
-                    }
-
-                    SaveSettings();
-                    cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = _settings.SavedNicknames;
-                }
             }
         }
 

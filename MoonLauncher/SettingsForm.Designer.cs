@@ -41,9 +41,10 @@
             // labelSettings
             // 
             labelSettings.AutoSize = true;
-            labelSettings.Location = new Point(61, 18);
+            labelSettings.Font = new Font("Segoe UI", 11F);
+            labelSettings.Location = new Point(46, 9);
             labelSettings.Name = "labelSettings";
-            labelSettings.Size = new Size(101, 15);
+            labelSettings.Size = new Size(125, 20);
             labelSettings.TabIndex = 0;
             labelSettings.Text = "Launcher Settings";
             // 
@@ -97,8 +98,8 @@
             // 
             // SettingsForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(222, 163);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
