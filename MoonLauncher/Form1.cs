@@ -93,7 +93,7 @@ namespace MoonLauncher
             }
             else if (_settings.SavedNicknames.Count == 0)
             {
-                _settings.SavedNicknames.Add(defaultNickname);
+                _settings.SavedNicknames.Add(defaultNickname);  
                 SaveSettings();
             }
 
@@ -236,6 +236,7 @@ namespace MoonLauncher
                     }
                     cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = _settings.SavedNicknames;
+                    cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
                 }
             }
         }
