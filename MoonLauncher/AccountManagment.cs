@@ -116,7 +116,9 @@ namespace MoonLauncher
 
         private void accmanagement_Close(object sender, FormClosingEventArgs e)
         {
-            if (SettingsChangesCount == 0)
+            int sum = SaveNicknameStorage.Count + DeleteNicknameStorage.Count;      // Temporal fix
+
+            if (SettingsChangesCount == 0 || sum == 0)
                 return;
 
             DialogResult saveChanges = MessageBox.Show($"Save {SettingsChangesCount} changes?", "Saving changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
