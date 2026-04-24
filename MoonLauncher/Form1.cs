@@ -283,8 +283,7 @@ namespace MoonLauncher
 
         public async Task CopyDirectoryAsync(string sourceDir, string destDir, bool overwrite = true)
         {
-            if (!Directory.Exists(sourceDir))
-                return;
+            if (!Directory.Exists(sourceDir)) return;
 
             Directory.CreateDirectory(destDir);
 
