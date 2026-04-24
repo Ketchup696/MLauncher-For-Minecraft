@@ -16,13 +16,12 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Net.NetworkInformation;
+using static MoonLauncher.StaticRequests;
 
 namespace MoonLauncher
 {
     public partial class Form1 : Form
     {
-        private string defaultNickname = "Player";
-
         private LauncherSettings _settings;
         private readonly string _settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoonLauncher");
         private readonly string _settingsFile;
@@ -57,9 +56,9 @@ namespace MoonLauncher
 
         private void _launcher_FileProgressChanged(object? sender, CmlLib.Core.Installers.InstallerProgressChangedEventArgs e)
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.Invoke(new Action(() => _launcher_FileProgressChanged(sender, e)));
+                Invoke(new Action(() => _launcher_FileProgressChanged(sender, e)));
                 return;
             }
 
@@ -75,7 +74,7 @@ namespace MoonLauncher
             {
                 string json = File.ReadAllText(_settingsFile);
                 _settings = JsonConvert.DeserializeObject<LauncherSettings>(json);
-                if (_settings == null)
+                if (_settings is null)
                 {
                     _settings = new LauncherSettings();
                 }
@@ -85,10 +84,9 @@ namespace MoonLauncher
                 _settings = new LauncherSettings();
             }
 
-            if (_settings.SavedNicknames == null || _settings.SavedNicknames.Count == 0)
+            if (_settings.SavedNicknames is null || _settings.SavedNicknames.Count is 0)
             {
-                _settings.SavedNicknames = new List<string>();
-                _settings.SavedNicknames.Add(defaultNickname);
+                _settings.SavedNicknames = [defaultNickname]; // use array instead of List
                 SaveSettings();
             }
 
@@ -213,9 +211,9 @@ namespace MoonLauncher
             var process = await _launcher.InstallAndBuildProcessAsync(version, launchOption);
 
             process.Start();
-            this.Hide();
+            Hide();
             await process.WaitForExitAsync();
-            this.Show();
+            Show();
         }
 
         private void btnSettings_Click(object sender, EventArgs e)

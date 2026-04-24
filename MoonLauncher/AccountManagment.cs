@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Runtime;
 using System.Text;
 using System.Windows.Forms;
+using static MoonLauncher.StaticRequests;
 
 namespace MoonLauncher
 {
@@ -13,7 +14,6 @@ namespace MoonLauncher
     {
         public LauncherSettings Settings { get; private set; }
 
-        private string defaultNickname = "Player";
         public AccountManagment(LauncherSettings settings)
         {
             InitializeComponent();
@@ -58,6 +58,7 @@ namespace MoonLauncher
                     {
                         Settings.SavedNicknames.Add(defaultNickname);
                     }
+
                     cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = Settings.SavedNicknames;
                 }
@@ -66,19 +67,19 @@ namespace MoonLauncher
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if(Settings == null)
+            if (Settings is null)
             {
                 Settings = new LauncherSettings();
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }
