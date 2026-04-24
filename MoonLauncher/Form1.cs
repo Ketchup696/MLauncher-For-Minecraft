@@ -234,8 +234,8 @@ namespace MoonLauncher
                     if (string.IsNullOrEmpty(nullNickname))
                         cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
 
-                    cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = _settings.SavedNicknames;
+                    //cmbNicknames.DataSource = null;
+                    cmbNicknames.DataSource = _settings.SavedNicknames.ToList();
                     cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
                 }
             }
