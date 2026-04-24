@@ -33,6 +33,7 @@ namespace MoonLauncher
                 {
                     Settings.SavedNicknames.Remove(nick);
                 }
+                DeleteNicknameStorage.Clear();
             }
 
             if (SaveNicknameStorage.Count > 0)
@@ -41,6 +42,7 @@ namespace MoonLauncher
                 {
                     Settings.SavedNicknames.Add(nick);
                 }
+                SaveNicknameStorage.Clear();
             }
 
             cmbNicknames.DataSource = Settings.SavedNicknames;
@@ -97,7 +99,7 @@ namespace MoonLauncher
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)      // Not in use
         {
             if (Settings is null)
                 Settings = new LauncherSettings();
@@ -106,7 +108,7 @@ namespace MoonLauncher
             //Close();  Unnecessary?
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)    // Not in use
         {
             DialogResult = DialogResult.Cancel;
             //Close();  Unnecessary?
@@ -127,6 +129,8 @@ namespace MoonLauncher
             else
             {
                 SettingsChangesCount = 0;
+                DeleteNicknameStorage.Clear();
+                SaveNicknameStorage.Clear();
             }
         }
     }
