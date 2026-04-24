@@ -36,9 +36,7 @@ namespace MoonLauncher
             else
             {
                 if (txtNickname != null && !Settings.SavedNicknames.Contains(txtNickname))
-                {
                     Settings.SavedNicknames.Add(txtNickname);
-                }
             }
             cmbNicknames.DataSource = null;
             cmbNicknames.DataSource = Settings.SavedNicknames;
@@ -55,9 +53,7 @@ namespace MoonLauncher
                     Settings.SavedNicknames.Remove(selectNickname);
 
                     if (Settings.SavedNicknames.Count == 0)
-                    {
                         Settings.SavedNicknames.Add(defaultNickname);
-                    }
 
                     cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = Settings.SavedNicknames;
@@ -68,9 +64,7 @@ namespace MoonLauncher
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (Settings is null)
-            {
                 Settings = new LauncherSettings();
-            }
 
             DialogResult = DialogResult.OK;
             Close();

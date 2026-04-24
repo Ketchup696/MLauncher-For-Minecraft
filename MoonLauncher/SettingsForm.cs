@@ -20,7 +20,7 @@ namespace MoonLauncher
         }
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            if (Settings != null)
+            if (Settings is not null)
             {
                 numMemory.Value = Settings.AllocatedMemoryGB;
             }
@@ -49,9 +49,7 @@ namespace MoonLauncher
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (Settings is null)
-            {
                 Settings = new LauncherSettings();
-            }
 
             Settings.AllocatedMemoryGB = (int)numMemory.Value;
 
