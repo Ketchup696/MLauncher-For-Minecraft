@@ -83,7 +83,8 @@ namespace MoonLauncher
 
             if (_settings.SavedNicknames is null || _settings.SavedNicknames.Count is 0)
             {
-                _settings.SavedNicknames = [defaultNickname]; // use array instead of List
+                _settings.SavedNicknames = new List<string>();
+                _settings.SavedNicknames.Add(defaultNickname);
                 SaveSettings();
             }
 
@@ -235,7 +236,7 @@ namespace MoonLauncher
                         cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
 
                     //cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = _settings.SavedNicknames.ToList();
+                    cmbNicknames.DataSource = _settings.SavedNicknames;
                     cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
                 }
             }
