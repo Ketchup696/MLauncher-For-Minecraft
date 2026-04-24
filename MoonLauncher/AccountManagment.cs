@@ -55,18 +55,6 @@ namespace MoonLauncher
         {
             string txtNickname = txtNewNickname.Text;
 
-            /*if (string.IsNullOrWhiteSpace(txtNickname))
-            {
-                cmbNicknames.SelectedItem = defaultNickname;
-            }
-            else
-            {
-                if (txtNickname != null && !Settings.SavedNicknames.Contains(txtNickname))
-                    Settings.SavedNicknames.Add(txtNickname);
-            }
-            cmbNicknames.DataSource = null;
-            cmbNicknames.DataSource = Settings.SavedNicknames.ToList();*/
-
             if (string.IsNullOrWhiteSpace(txtNickname))
             {
                 MessageBox.Show("The nickname field must not be empty!");
@@ -85,55 +73,13 @@ namespace MoonLauncher
                 MessageBox.Show("This nickname already exists!");
                 return;
             }
-
-            /*if (Settings is null)
-                Settings = new LauncherSettings();*/    // Unnecessary?
-
-            //DialogResult = DialogResult.OK;
         }
 
         private void btnDeleteNickname_Click(object sender, EventArgs e)
         {
-            /*DialogResult resultDeleteNickname = MessageBox.Show($"Are you sure you want to delete this account?", "Deleting a account", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (resultDeleteNickname == DialogResult.Yes)
-            {
-                string selectNickname = cmbNicknames.Text;
-                if (Settings.SavedNicknames.Contains(selectNickname))
-                {
-                    Settings.SavedNicknames.Remove(selectNickname);
-
-                    if (Settings.SavedNicknames.Count == 0)
-                        Settings.SavedNicknames.Add(defaultNickname);
-
-                    cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = Settings.SavedNicknames.ToList();
-                }
-
-                if (Settings is null)
-                    Settings = new LauncherSettings();    // Unnecessary?
-
-                //DialogResult = DialogResult.OK;
-                SettingsChangesCount++;
-            }*/
-
-
-
-
             DialogResult resultDeleteNickname = MessageBox.Show($"Are you sure you want to delete this account?", "Deleting a account", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultDeleteNickname == DialogResult.Yes)
             {
-                /*string selectNickname = cmbNicknames.Text;
-                if (Settings.SavedNicknames.Contains(selectNickname))
-                {
-                    Settings.SavedNicknames.Remove(selectNickname);
-
-                    if (Settings.SavedNicknames.Count == 0)
-                        Settings.SavedNicknames.Add(defaultNickname);
-
-                    cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = Settings.SavedNicknames.ToList();
-                }*/
-
                 string selectedNickname = cmbNicknames.Text;
 
                 if (selectedNickname == defaultNickname)
@@ -148,11 +94,6 @@ namespace MoonLauncher
                         SettingsChangesCount++;
                     }
                 }
-
-                /*if (Settings is null)
-                    Settings = new LauncherSettings();*/    // Unnecessary?
-
-                //DialogResult = DialogResult.OK;
             }
         }
 
