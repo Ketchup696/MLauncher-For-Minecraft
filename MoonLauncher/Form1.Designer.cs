@@ -134,7 +134,7 @@
             btnGameDir.FlatAppearance.BorderSize = 0;
             btnGameDir.FlatStyle = FlatStyle.Flat;
             btnGameDir.Image = Properties.Resources.Folder;
-            btnGameDir.Location = new Point(450, 228);
+            btnGameDir.Location = new Point(450, 229);
             btnGameDir.Name = "btnGameDir";
             btnGameDir.Size = new Size(32, 32);
             btnGameDir.TabIndex = 14;

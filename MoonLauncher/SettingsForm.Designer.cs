@@ -32,9 +32,12 @@
             labelSettings = new Label();
             LabelRAM = new Label();
             numMemory = new NumericUpDown();
-            LabelRAMWarning = new Label();
+            labelRAMWarning = new Label();
             btnSave = new Button();
             btnCancel = new Button();
+            btnBrowse = new Button();
+            txtGamePath = new TextBox();
+            labelParhDirectoryGame = new Label();
             ((System.ComponentModel.ISupportInitialize)numMemory).BeginInit();
             SuspendLayout();
             // 
@@ -42,7 +45,7 @@
             // 
             labelSettings.AutoSize = true;
             labelSettings.Font = new Font("Segoe UI", 11F);
-            labelSettings.Location = new Point(46, 9);
+            labelSettings.Location = new Point(95, 9);
             labelSettings.Name = "labelSettings";
             labelSettings.Size = new Size(125, 20);
             labelSettings.TabIndex = 0;
@@ -51,7 +54,7 @@
             // LabelRAM
             // 
             LabelRAM.AutoSize = true;
-            LabelRAM.Location = new Point(12, 58);
+            LabelRAM.Location = new Point(6, 51);
             LabelRAM.Name = "LabelRAM";
             LabelRAM.Size = new Size(114, 15);
             LabelRAM.TabIndex = 1;
@@ -59,7 +62,7 @@
             // 
             // numMemory
             // 
-            numMemory.Location = new Point(160, 56);
+            numMemory.Location = new Point(139, 49);
             numMemory.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
             numMemory.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
             numMemory.Name = "numMemory";
@@ -67,20 +70,20 @@
             numMemory.TabIndex = 2;
             numMemory.Value = new decimal(new int[] { 4, 0, 0, 0 });
             // 
-            // LabelRAMWarning
+            // labelRAMWarning
             // 
-            LabelRAMWarning.AutoSize = true;
-            LabelRAMWarning.Location = new Point(3, 82);
-            LabelRAMWarning.Name = "LabelRAMWarning";
-            LabelRAMWarning.Size = new Size(214, 30);
-            LabelRAMWarning.TabIndex = 3;
-            LabelRAMWarning.Text = "If you're unsure how to use this setting,\r\njust leave it as is.\r\n";
+            labelRAMWarning.AutoSize = true;
+            labelRAMWarning.Location = new Point(6, 85);
+            labelRAMWarning.Name = "labelRAMWarning";
+            labelRAMWarning.Size = new Size(304, 30);
+            labelRAMWarning.TabIndex = 3;
+            labelRAMWarning.Text = "If you're unsure how to use this setting, just leave it as is.\r\n\r\n";
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(17, 128);
+            btnSave.Location = new Point(12, 210);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(75, 23);
+            btnSave.Size = new Size(80, 23);
             btnSave.TabIndex = 4;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
@@ -88,7 +91,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(129, 127);
+            btnCancel.Location = new Point(230, 210);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 23);
             btnCancel.TabIndex = 5;
@@ -96,14 +99,44 @@
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
+            // btnBrowse
+            // 
+            btnBrowse.Location = new Point(230, 148);
+            btnBrowse.Name = "btnBrowse";
+            btnBrowse.Size = new Size(75, 23);
+            btnBrowse.TabIndex = 6;
+            btnBrowse.Text = "Browse";
+            btnBrowse.UseVisualStyleBackColor = true;
+            btnBrowse.Click += btnBrowse_Click;
+            // 
+            // txtGamePath
+            // 
+            txtGamePath.Location = new Point(6, 148);
+            txtGamePath.Name = "txtGamePath";
+            txtGamePath.ReadOnly = true;
+            txtGamePath.Size = new Size(214, 23);
+            txtGamePath.TabIndex = 7;
+            // 
+            // labelParhDirectoryGame
+            // 
+            labelParhDirectoryGame.AutoSize = true;
+            labelParhDirectoryGame.Location = new Point(6, 126);
+            labelParhDirectoryGame.Name = "labelParhDirectoryGame";
+            labelParhDirectoryGame.Size = new Size(199, 15);
+            labelParhDirectoryGame.TabIndex = 8;
+            labelParhDirectoryGame.Text = "The path to The directory .minecraft:";
+            // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(222, 163);
+            ClientSize = new Size(317, 245);
+            Controls.Add(labelParhDirectoryGame);
+            Controls.Add(txtGamePath);
+            Controls.Add(btnBrowse);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
-            Controls.Add(LabelRAMWarning);
+            Controls.Add(labelRAMWarning);
             Controls.Add(numMemory);
             Controls.Add(LabelRAM);
             Controls.Add(labelSettings);
@@ -122,8 +155,11 @@
         private Label labelSettings;
         private Label LabelRAM;
         private NumericUpDown numMemory;
-        private Label LabelRAMWarning;
+        private Label labelRAMWarning;
         private Button btnSave;
         private Button btnCancel;
+        private Button btnBrowse;
+        private TextBox txtGamePath;
+        private Label labelParhDirectoryGame;
     }
 }

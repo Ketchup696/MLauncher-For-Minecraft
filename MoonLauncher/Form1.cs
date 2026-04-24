@@ -29,7 +29,7 @@ namespace MoonLauncher
 
         private MinecraftLauncher _launcher;
 
-        private string gameDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft");
+        private string defaultGameDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft");
 
         public Form1()
         {
@@ -49,7 +49,7 @@ namespace MoonLauncher
 
         private void InitializeLauncher()
         {
-            var path = new MinecraftPath(gameDir);
+            var path = new MinecraftPath(_settings.GameDir);
             _launcher = new MinecraftLauncher(path);
 
             _launcher.FileProgressChanged += _launcher_FileProgressChanged;
@@ -85,15 +85,16 @@ namespace MoonLauncher
                 _settings = new LauncherSettings();
             }
 
-            if (_settings.SavedNicknames == null)
+            if (_settings.SavedNicknames == null || _settings.SavedNicknames.Count == 0)
             {
                 _settings.SavedNicknames = new List<string>();
                 _settings.SavedNicknames.Add(defaultNickname);
                 SaveSettings();
             }
-            else if (_settings.SavedNicknames.Count == 0)
+
+            if (string.IsNullOrEmpty(_settings.GameDir))
             {
-                _settings.SavedNicknames.Add(defaultNickname);  
+                _settings.GameDir = defaultGameDir;
                 SaveSettings();
             }
 
@@ -160,6 +161,14 @@ namespace MoonLauncher
 
             _settings.LastNickname = cmbNicknames.Text;
             SaveSettings();
+
+            if(_settings.GameDir != _settings.LastGameDir)
+            {
+                await CopyDirectoryAsync(_settings.LastGameDir, _settings.GameDir);
+                _settings.LastGameDir = _settings.GameDir;
+                SaveSettings();
+                InitializeLauncher();
+            }
 
             try
             {
@@ -243,13 +252,13 @@ namespace MoonLauncher
 
         private void btnGameDir_Click(object sender, EventArgs e)
         {
-            if (!System.IO.Directory.Exists(gameDir))
+            if (!System.IO.Directory.Exists(_settings.GameDir))
             {
                 MessageBox.Show($"Directory not found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                Process.Start("explorer.exe", gameDir);
+                Process.Start("explorer.exe", _settings.GameDir);
             }
         }
 
@@ -258,7 +267,7 @@ namespace MoonLauncher
             DialogResult resultDeleteVersion = MessageBox.Show($"Are you sure you want to delete this version?", "Deleting a version", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultDeleteVersion == DialogResult.Yes)
             {
-                string folderVersions = Path.Combine(gameDir, "versions");
+                string folderVersions = Path.Combine(_settings.GameDir, "versions");
                 string deleteVersion = cmbVersion.Text;
                 string folderDeleteVersion = Path.Combine(folderVersions, deleteVersion);
                 try
@@ -278,6 +287,42 @@ namespace MoonLauncher
                 {
                     MessageBox.Show($"Error: {ex}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        public async Task CopyDirectoryAsync(string sourceDir, string destDir, bool overwrite = true)
+        {
+            if (!Directory.Exists(sourceDir))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(destDir);
+
+            int totalFiles = Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories).Length;
+            int copiedFiles = 0;
+
+            await Task.Run(() =>
+            {
+                CopyRecursive(sourceDir, destDir, overwrite, totalFiles, ref copiedFiles);
+            });
+        }
+
+        private void CopyRecursive(string source, string dest, bool overwrite, int totalFiles, ref int copiedFiles)
+        {
+            foreach (string file in Directory.GetFiles(source))
+            {
+                string destFile = Path.Combine(dest, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite);
+
+                copiedFiles++;
+            }
+
+            foreach (string dir in Directory.GetDirectories(source))
+            {
+                string destDir = Path.Combine(dest, Path.GetFileName(dir));
+                Directory.CreateDirectory(destDir);
+                CopyRecursive(dir, destDir, overwrite, totalFiles, ref copiedFiles);
             }
         }
     }
