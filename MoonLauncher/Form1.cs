@@ -226,7 +226,7 @@ namespace MoonLauncher
         {
             using (var accountManagment = new AccountManagment(_settings))
             {
-                if(accountManagment.ShowDialog(this) == DialogResult.OK)
+                if (accountManagment.ShowDialog(this) == DialogResult.OK)
                 {
                     _settings = accountManagment.Settings;
                     SaveSettings();
