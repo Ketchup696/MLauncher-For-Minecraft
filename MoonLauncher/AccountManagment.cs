@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Runtime;
 using System.Text;
 using System.Windows.Forms;
+using static MoonLauncher.StaticRequests;
 
 namespace MoonLauncher
 {
@@ -13,11 +14,39 @@ namespace MoonLauncher
     {
         public LauncherSettings Settings { get; private set; }
 
-        private string defaultNickname = "Player";
+        private int SettingsChangesCount = 0;       // Счетчик изменений
+
         public AccountManagment(LauncherSettings settings)
         {
             InitializeComponent();
             Settings = settings ?? new LauncherSettings();
+        }
+
+        private List<string> SaveNicknameStorage = new List<string> {};         // Временное хранилище созданных профилей
+        private List<string> DeleteNicknameStorage = new List<string> {};       // Временное хранилище удаленных профилей
+                                                                                 
+
+        private void SaveChanges()      // Сохранение профилей
+        {
+            if (DeleteNicknameStorage.Count > 0)                        // Если во временном хранилище есть данные к удалению, то работаем следующим путем:
+            {                                                           // Берем из хранилища по одному нику и удаляем его из списка профилей
+                foreach (string nick in DeleteNicknameStorage)          // В конце очищаем временное хранилище для предотвращения багов
+                {
+                    Settings.SavedNicknames.Remove(nick);                   
+                }
+                DeleteNicknameStorage.Clear();
+            }
+
+            if (SaveNicknameStorage.Count > 0)                          // Если во временном хранилище есть данные к созданию, то работаем следующим путем:
+            {                                                           // Берем из хранилища по одному нику и добавляем его в список профилей
+                foreach (string nick in SaveNicknameStorage)            // В конце очищаем временное хранилище для предотвращения багов
+                {
+                    Settings.SavedNicknames.Add(nick);
+                }
+                SaveNicknameStorage.Clear();
+            }
+
+            cmbNicknames.DataSource = Settings.SavedNicknames;          // Вбиваем в combobox обновленные данные профилей
         }
 
         private void CreateAccount_Load(object sender, EventArgs e)
@@ -29,19 +58,24 @@ namespace MoonLauncher
         {
             string txtNickname = txtNewNickname.Text;
 
-            if (string.IsNullOrWhiteSpace(txtNickname))
+            if (string.IsNullOrWhiteSpace(txtNickname))                 // Проверяем строку на пустоту
             {
-                cmbNicknames.SelectedItem = defaultNickname;
+                MessageBox.Show("The nickname field must not be empty!");
+                return;
+            }
+
+            txtNickname = txtNickname.Trim();               // Обрезаем пробелы в нике, если они есть
+
+            if (!Settings.SavedNicknames.Contains(txtNickname))         // Если список профилей НЕ содержит ник, который мы пытаемся создать, то:
+            {                                                           // Добавляем его в список
+                SaveNicknameStorage.Add(txtNickname);                   // Прибавляем единицу к счетчику изменений
+                SettingsChangesCount++;
             }
             else
             {
-                if (txtNickname != null && !Settings.SavedNicknames.Contains(txtNickname))
-                {
-                    Settings.SavedNicknames.Add(txtNickname);
-                }
+                MessageBox.Show("This nickname already exists!");       // Если никнейм, который мы пытаемся создать, уже существует, то сообщаем об этом пользователю
+                return;
             }
-            cmbNicknames.DataSource = null;
-            cmbNicknames.DataSource = Settings.SavedNicknames;
         }
 
         private void btnDeleteNickname_Click(object sender, EventArgs e)
@@ -49,36 +83,58 @@ namespace MoonLauncher
             DialogResult resultDeleteNickname = MessageBox.Show($"Are you sure you want to delete this account?", "Deleting a account", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (resultDeleteNickname == DialogResult.Yes)
             {
-                string selectNickname = cmbNicknames.Text;
-                if (Settings.SavedNicknames.Contains(selectNickname))
-                {
-                    Settings.SavedNicknames.Remove(selectNickname);
+                string selectedNickname = cmbNicknames.Text;
 
-                    if (Settings.SavedNicknames.Count == 0)
-                    {
-                        Settings.SavedNicknames.Add(defaultNickname);
+                if (selectedNickname == defaultNickname)        // Если пользователь пытается удалить стандартный профиль, то говорим ему об этом
+                {
+                    MessageBox.Show("You cannot delete the standard user!");
+                }
+                else
+                {
+                    if (Settings.SavedNicknames.Contains(selectedNickname))         // Если список профилей содержит профиль, который мы удаляем, то:
+                    {                                                               // Добавляем удаляемый профиль в список временного хранилища, подготовленного к удалению
+                        DeleteNicknameStorage.Add(selectedNickname);                // Прибавляем единицу к счетчику изменений
+                        SettingsChangesCount++;
                     }
-                    cmbNicknames.DataSource = null;
-                    cmbNicknames.DataSource = Settings.SavedNicknames;
                 }
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)      // Not in use
         {
-            if(Settings == null)
-            {
+            if (Settings is null)
                 Settings = new LauncherSettings();
-            }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            //Close();  Unnecessary?
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)    // Not in use
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            //Close();  Unnecessary?
         }
+
+        private void accmanagement_Close(object sender, FormClosingEventArgs e)         // Закрытие формы AccountManagement
+        {
+            int sum = SaveNicknameStorage.Count + DeleteNicknameStorage.Count;      // Temporal fix || берем общее число данных из временного хранилища
+
+            if (SettingsChangesCount == 0 || sum == 0)          // Если счетчик изменений равен нулю, или сумма общего числа данных из временного хранилища равна нулю,
+                return;                                         // пропускаем дальнейшие действия
+
+            DialogResult saveChanges = MessageBox.Show($"Save {SettingsChangesCount} changes?", "Saving changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (saveChanges == DialogResult.Yes)        // Спрашиваем у пользователя, согласен ли он применить {Количество} изменений?
+            {
+                SaveChanges();      // Вызываем сохранение профилей
+                SettingsChangesCount = 0;       // Обнуляем счетчик изменений
+                DialogResult = DialogResult.OK;     // Выходим из диалога со статусом OK
+            }
+            else
+            {
+                SettingsChangesCount = 0;       // Обнуляем счетчик изменений
+                DeleteNicknameStorage.Clear();  
+                SaveNicknameStorage.Clear();    //
+            }                                   // Очищаем временные хранилища
+        }                                       //
     }
 }

@@ -75,7 +75,7 @@
             // 
             NameLauncher.AutoSize = true;
             NameLauncher.Font = new Font("Segoe UI", 11F);
-            NameLauncher.Location = new Point(159, 9);
+            NameLauncher.Location = new Point(140, 9);
             NameLauncher.Name = "NameLauncher";
             NameLauncher.Size = new Size(178, 20);
             NameLauncher.TabIndex = 5;
