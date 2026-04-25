@@ -33,7 +33,7 @@ namespace MoonLauncher
         public Form1()
         {
             InitializeComponent();
-            NameLauncher.Text = $"{launcherName} {launcherVersion}";
+            NameLauncher.Text = $"{launcherName} {launcherVersion}";        // ƒобавл€ем название лаунчера и его версию
             btnPlay.Enabled = false;
 
             if (!Directory.Exists(_settingsFolder))

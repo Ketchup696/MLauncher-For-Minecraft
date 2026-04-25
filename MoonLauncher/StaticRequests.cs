@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MoonLauncher
 {
-    internal static class StaticRequests
+    internal static class StaticRequests        // Статические запросы. Данные, которые НЕ БУДУТ изменяться в процессе выполнения программы.
     {
         internal const string defaultNickname = "Player";
         internal const string launcherName = "Minecraft Moon Launcher";
