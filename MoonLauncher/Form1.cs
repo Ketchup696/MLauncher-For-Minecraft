@@ -69,29 +69,30 @@ namespace MoonLauncher
 
         private async Task CheckForDuplicates(bool all)
         {
+            var area = _settings.SavedNicknames;
+
             if (all)
             {
-                List<string> originals = _settings.SavedNicknames
+                List<string> originals = area
                             .GroupBy(x => x)
                             .Select(g => g.First())
                             .ToList();
 
-
-                _settings.SavedNicknames.Clear();
+                area.Clear();
 
                 foreach (var item in originals)
-                    _settings.SavedNicknames.Add(item);
+                    area.Add(item);
 
             }
             else
             {
-                if (_settings.SavedNicknames.Count(x => x == defaultNickname) >= 2)
+                if (area.Count(x => x == defaultNickname) >= 2)
                 {
-                    var lastIndex = _settings.SavedNicknames
+                    var lastIndex = area
                             .Select((name, index) => new { name, index })
                             .LastOrDefault(x => x.name == defaultNickname)?.index ?? -1;
                     if (lastIndex >= 0)
-                        _settings.SavedNicknames.RemoveAt(lastIndex);
+                        area.RemoveAt(lastIndex);
                 }
             }
 
