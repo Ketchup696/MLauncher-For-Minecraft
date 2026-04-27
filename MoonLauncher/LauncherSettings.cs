@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace MoonLauncher
@@ -11,6 +12,6 @@ namespace MoonLauncher
         public string LastVersion { get; set; } = "";
         public string GameDir { get; set; } = "";
         public string LastGameDir { get; set; } = "";
-        public List<string> SavedNicknames { get; set; } = new List<string>();
+        public BindingList<string> SavedNicknames { get; set; } = new BindingList<string>();
     }
 }

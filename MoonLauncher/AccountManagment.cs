@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Runtime;
 using System.Text;
@@ -22,8 +23,9 @@ namespace MoonLauncher
             Settings = settings ?? new LauncherSettings();
         }
 
-        private List<string> SaveNicknameStorage = new List<string> {};         // Временное хранилище созданных профилей
-        private List<string> DeleteNicknameStorage = new List<string> {};       // Временное хранилище удаленных профилей
+        private BindingList<string> TempNicknameStorage = new BindingList<string>();     // Временное хранилище профилей (Костыль. На производительность не вляет, оставляем)
+        private List<string> SaveNicknameStorage = new List<string>();         // Временное хранилище созданных профилей
+        private List<string> DeleteNicknameStorage = new List<string>();       // Временное хранилище удаленных профилей
                                                                                  
 
         private void SaveChanges()      // Сохранение профилей
@@ -52,6 +54,7 @@ namespace MoonLauncher
         private void CreateAccount_Load(object sender, EventArgs e)
         {
             cmbNicknames.DataSource = Settings.SavedNicknames;
+            Settings.SavedNicknames.ToList().ForEach(TempNicknameStorage.Add);      // Передаем временному хранилищу изолированные данные из SavedNicknames 
         }
 
         private void btnSaveNickname_Click(object sender, EventArgs e)
@@ -66,9 +69,11 @@ namespace MoonLauncher
 
             txtNickname = txtNickname.Trim();               // Обрезаем пробелы в нике, если они есть
 
-            if (!Settings.SavedNicknames.Contains(txtNickname))         // Если список профилей НЕ содержит ник, который мы пытаемся создать, то:
+            if (!Settings.SavedNicknames.Contains(txtNickname) && !SaveNicknameStorage.Contains(txtNickname))         // Если список профилей НЕ содержит ник, который мы пытаемся создать, то:
             {                                                           // Добавляем его в список
                 SaveNicknameStorage.Add(txtNickname);                   // Прибавляем единицу к счетчику изменений
+                TempNicknameStorage.Add(txtNickname);
+                cmbNicknames.DataSource = TempNicknameStorage;
                 SettingsChangesCount++;
             }
             else
@@ -94,7 +99,16 @@ namespace MoonLauncher
                     if (Settings.SavedNicknames.Contains(selectedNickname))         // Если список профилей содержит профиль, который мы удаляем, то:
                     {                                                               // Добавляем удаляемый профиль в список временного хранилища, подготовленного к удалению
                         DeleteNicknameStorage.Add(selectedNickname);                // Прибавляем единицу к счетчику изменений
+                        TempNicknameStorage.Remove(selectedNickname);
+                        cmbNicknames.DataSource = TempNicknameStorage;
                         SettingsChangesCount++;
+                    }
+                    else if (SaveNicknameStorage.Contains(selectedNickname))
+                    {
+                        SaveNicknameStorage.Remove(selectedNickname);
+                        TempNicknameStorage.Remove(selectedNickname);
+                        cmbNicknames.DataSource = TempNicknameStorage;
+                        SettingsChangesCount--;
                     }
                 }
             }
