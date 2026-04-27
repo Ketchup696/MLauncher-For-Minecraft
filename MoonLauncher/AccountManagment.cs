@@ -116,8 +116,8 @@ namespace MoonLauncher
 
         private void btnSave_Click(object sender, EventArgs e)      // Not in use
         {
-            if (Settings is null)
-                Settings = new LauncherSettings();
+            /*if (Settings is null)
+                Settings = new LauncherSettings();*/
 
             DialogResult = DialogResult.OK;
             //Close();  Unnecessary?
@@ -131,10 +131,8 @@ namespace MoonLauncher
 
         private void accmanagement_Close(object sender, FormClosingEventArgs e)         // Закрытие формы AccountManagement
         {
-            int sum = SaveNicknameStorage.Count + DeleteNicknameStorage.Count;      // Temporal fix || берем общее число данных из временного хранилища
-
-            if (SettingsChangesCount == 0 || sum == 0)          // Если счетчик изменений равен нулю, или сумма общего числа данных из временного хранилища равна нулю,
-                return;                                         // пропускаем дальнейшие действия
+            if (SettingsChangesCount == 0)          // Если счетчик изменений равен нулю,
+                return;                             // пропускаем дальнейшие действия
 
             DialogResult saveChanges = MessageBox.Show($"Save {SettingsChangesCount} changes?", "Saving changes", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (saveChanges == DialogResult.Yes)        // Спрашиваем у пользователя, согласен ли он применить {Количество} изменений?

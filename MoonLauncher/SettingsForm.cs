@@ -20,14 +20,16 @@ namespace MoonLauncher
         }
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            if (Settings is not null)
+            /*if (Settings is not null)
             {
                 numMemory.Value = Settings.AllocatedMemoryGB;
             }
             else
             {
                 numMemory.Value = 4;
-            }
+            }*/
+
+            numMemory.Value = Settings.AllocatedMemoryGB;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -48,19 +50,19 @@ namespace MoonLauncher
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (Settings is null)
-                Settings = new LauncherSettings();
+            /*if (Settings is null)
+                Settings = new LauncherSettings();*/
 
             Settings.AllocatedMemoryGB = (int)numMemory.Value;
 
             DialogResult = DialogResult.OK;
-            Close();
+            //Close();      // No need
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            Close();
+            //Close();      // No need
         }
     }
 }
