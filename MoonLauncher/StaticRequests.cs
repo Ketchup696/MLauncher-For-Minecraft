@@ -10,6 +10,6 @@ namespace MoonLauncher
     {
         internal const string defaultNickname = "Player";
         internal const string launcherName = "Minecraft Moon Launcher";
-        internal const string launcherVersion = "1.4.0";
+        internal static readonly string launcherVersion = Version.TryParse(Application.ProductVersion.Split('+')[0], out var v) ? v.ToString(3) : "0.0.0";
     }
 }
