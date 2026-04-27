@@ -67,24 +67,55 @@ namespace MoonLauncher
             statusLabel.Text = $"File: {e.Name}";
         }
 
-        private void LoadSettings()
+        private async Task CheckForDuplicates(bool all)
+        {
+            if (all)
+            {
+                List<string> originals = _settings.SavedNicknames
+                            .GroupBy(x => x)
+                            .Select(g => g.First())
+                            .ToList();
+
+
+                _settings.SavedNicknames.Clear();
+
+                foreach (var item in originals)
+                    _settings.SavedNicknames.Add(item);
+
+            }
+            else
+            {
+                if (_settings.SavedNicknames.Count(x => x == defaultNickname) >= 2)
+                {
+                    var lastIndex = _settings.SavedNicknames
+                            .Select((name, index) => new { name, index })
+                            .LastOrDefault(x => x.name == defaultNickname)?.index ?? -1;
+                    if (lastIndex >= 0)
+                        _settings.SavedNicknames.RemoveAt(lastIndex);
+                }
+            }
+
+            SaveSettings();
+        }
+
+        private async void LoadSettings()
         {
             if (File.Exists(_settingsFile))
             {
                 string json = File.ReadAllText(_settingsFile);
                 _settings = JsonConvert.DeserializeObject<LauncherSettings>(json);
                 if (_settings is null)
+                {
                     _settings = new LauncherSettings();
+                }
+                else
+                {
+                    await CheckForDuplicates(true);       // «апускаем проверку дубликатов ников. true - провер€ем все, false - провер€ем только дефолтное им€
+                }
             }
             else
             {
                 _settings = new LauncherSettings();
-            }
-
-            if (_settings.SavedNicknames is null || _settings.SavedNicknames.Count is 0)          // Ёто, должно быть, можно сделать проще?
-            {
-                _settings.SavedNicknames.Add(defaultNickname); // Add default profile if not have others
-                SaveSettings();
             }
 
             if (string.IsNullOrEmpty(_settings.GameDir))
