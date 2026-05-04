@@ -112,7 +112,6 @@
             btnSave.TabIndex = 7;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
-            btnSave.Visible = false;
             btnSave.Click += btnSave_Click;
             // 
             // btnCancel
@@ -123,7 +122,6 @@
             btnCancel.TabIndex = 8;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
-            btnCancel.Visible = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // AccountManagment
@@ -145,7 +143,6 @@
             MaximizeBox = false;
             Name = "AccountManagment";
             Text = "Account Managment";
-            FormClosing += accmanagement_Close;
             Load += CreateAccount_Load;
             ResumeLayout(false);
             PerformLayout();
