@@ -11,6 +11,6 @@ namespace MoonLauncher
         public string LastVersion { get; set; } = "";
         public string GameDir { get; set; } = "";
         public string LastGameDir { get; set; } = "";
-        public List<string> SavedNicknames { get; set; } = new List<string>();
+        public List<string> SavedNicknames { get; set; } = new();
     }
 }

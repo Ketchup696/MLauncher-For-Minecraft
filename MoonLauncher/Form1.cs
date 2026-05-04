@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MoonLauncher
 {
@@ -203,11 +205,19 @@ namespace MoonLauncher
 
             await _launcher.InstallAsync(version);
 
+            var session = MSession.CreateOfflineSession(nickname);
+            session.UUID = GetPersistentOfflineUuid(nickname);
+
             var launchOption = new MLaunchOption
             {
-                Session = MSession.CreateOfflineSession(nickname),
+                Session = session,
                 MaximumRamMb = _settings.AllocatedMemoryGB * 1024,
-                JavaPath = null
+                JavaPath = null,
+                ExtraJvmArguments = new[]
+                {
+                    new MArgument("-XX:+UseG1GC"),
+                    new MArgument("-XX:MaxGCPauseMillis=50")
+                }
             };
 
             var process = await _launcher.InstallAndBuildProcessAsync(version, launchOption);
@@ -216,6 +226,22 @@ namespace MoonLauncher
             this.Hide();
             await process.WaitForExitAsync();
             this.Show();
+        }
+
+        private string GetPersistentOfflineUuid(string username)
+        {
+            string input = "OfflinePlayer:" + username;
+
+            using (var md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                hashBytes[6] = (byte)((hashBytes[6] & 0x0f) | 0x30);
+                hashBytes[8] = (byte)((hashBytes[8] & 0x3f) | 0x80);
+
+                return new Guid(hashBytes).ToString("N");
+            }
         }
 
         private void btnSettings_Click(object sender, EventArgs e)

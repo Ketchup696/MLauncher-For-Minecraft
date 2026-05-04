@@ -112,7 +112,7 @@
             btnSave.TabIndex = 7;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
+            btnSave.Click += btnSaveChanges_Click;
             // 
             // btnCancel
             // 
@@ -122,7 +122,7 @@
             btnCancel.TabIndex = 8;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
-            btnCancel.Click += btnCancel_Click;
+            btnCancel.Click += btnCancelChanges_Click;
             // 
             // AccountManagment
             // 
