@@ -16,12 +16,13 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Net.NetworkInformation;
-using static MoonLauncher.StaticRequests;
 
 namespace MoonLauncher
 {
     public partial class Form1 : Form
     {
+        private string defaultNickname = "Player";
+
         private LauncherSettings _settings;
         private readonly string _settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoonLauncher");
         private readonly string _settingsFile;
@@ -33,12 +34,12 @@ namespace MoonLauncher
         public Form1()
         {
             InitializeComponent();
-            NameLauncher.Text = $"{launcherName} {launcherVersion}";        // Добавляем название лаунчера и его версию
             btnPlay.Enabled = false;
 
             if (!Directory.Exists(_settingsFolder))
+            {
                 Directory.CreateDirectory(_settingsFolder);
-
+            }
             _settingsFile = Path.Combine(_settingsFolder, "settings.json");
 
             LoadSettings();
@@ -56,9 +57,9 @@ namespace MoonLauncher
 
         private void _launcher_FileProgressChanged(object? sender, CmlLib.Core.Installers.InstallerProgressChangedEventArgs e)
         {
-            if (InvokeRequired)
+            if (this.InvokeRequired)
             {
-                Invoke(new Action(() => _launcher_FileProgressChanged(sender, e)));
+                this.Invoke(new Action(() => _launcher_FileProgressChanged(sender, e)));
                 return;
             }
 
@@ -67,56 +68,28 @@ namespace MoonLauncher
             statusLabel.Text = $"File: {e.Name}";
         }
 
-        private async Task CheckForDuplicates(bool all)
+        private void LoadSettings()
         {
-            var area = _settings.SavedNicknames;
 
-            if (all)
-            {
-                List<string> originals = area
-                            .GroupBy(x => x)
-                            .Select(g => g.First())
-                            .ToList();
-
-                area.Clear();
-
-                foreach (var item in originals)
-                    area.Add(item);
-
-            }
-            else
-            {
-                if (area.Count(x => x == defaultNickname) >= 2)
-                {
-                    var lastIndex = area
-                            .Select((name, index) => new { name, index })
-                            .LastOrDefault(x => x.name == defaultNickname)?.index ?? -1;
-                    if (lastIndex >= 0)
-                        area.RemoveAt(lastIndex);
-                }
-            }
-
-            SaveSettings();
-        }
-
-        private async void LoadSettings()
-        {
             if (File.Exists(_settingsFile))
             {
                 string json = File.ReadAllText(_settingsFile);
                 _settings = JsonConvert.DeserializeObject<LauncherSettings>(json);
-                if (_settings is null)
+                if (_settings == null)
                 {
                     _settings = new LauncherSettings();
-                }
-                else
-                {
-                    await CheckForDuplicates(true);       // Запускаем проверку дубликатов ников. true - проверяем все, false - проверяем только дефолтное имя
                 }
             }
             else
             {
                 _settings = new LauncherSettings();
+            }
+
+            if (_settings.SavedNicknames == null || _settings.SavedNicknames.Count == 0)
+            {
+                _settings.SavedNicknames = new List<string>();
+                _settings.SavedNicknames.Add(defaultNickname);
+                SaveSettings();
             }
 
             if (string.IsNullOrEmpty(_settings.GameDir))
@@ -132,8 +105,9 @@ namespace MoonLauncher
         private void SaveSettings()
         {
             if (!Directory.Exists(_settingsFolder))
+            {
                 Directory.CreateDirectory(_settingsFolder);
-
+            }
             string json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
             File.WriteAllText(_settingsFile, json);
         }
@@ -164,7 +138,9 @@ namespace MoonLauncher
                 else
                 {
                     if (releaseVersions.Count > 0)
+                    {
                         cmbVersion.SelectedIndex = 0;
+                    }
                 }
             }
             catch
@@ -186,7 +162,7 @@ namespace MoonLauncher
             _settings.LastNickname = cmbNicknames.Text;
             SaveSettings();
 
-            if (_settings.GameDir != _settings.LastGameDir)
+            if(_settings.GameDir != _settings.LastGameDir)
             {
                 await CopyDirectoryAsync(_settings.LastGameDir, _settings.GameDir);
                 _settings.LastGameDir = _settings.GameDir;
@@ -237,9 +213,9 @@ namespace MoonLauncher
             var process = await _launcher.InstallAndBuildProcessAsync(version, launchOption);
 
             process.Start();
-            Hide();
+            this.Hide();
             await process.WaitForExitAsync();
-            Show();
+            this.Show();
         }
 
         private void btnSettings_Click(object sender, EventArgs e)
@@ -258,15 +234,16 @@ namespace MoonLauncher
         {
             using (var accountManagment = new AccountManagment(_settings))
             {
-                if (accountManagment.ShowDialog(this) == DialogResult.OK)
+                if(accountManagment.ShowDialog(this) == DialogResult.OK)
                 {
                     _settings = accountManagment.Settings;
                     SaveSettings();
                     string nullNickname = cmbNicknames.Text;
                     if (string.IsNullOrEmpty(nullNickname))
+                    {
                         cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
-
-                    //cmbNicknames.DataSource = null;
+                    }
+                    cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = _settings.SavedNicknames;
                     cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
                 }
@@ -275,7 +252,7 @@ namespace MoonLauncher
 
         private void btnGameDir_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists(_settings.GameDir))
+            if (!System.IO.Directory.Exists(_settings.GameDir))
             {
                 MessageBox.Show($"Directory not found", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -315,7 +292,10 @@ namespace MoonLauncher
 
         public async Task CopyDirectoryAsync(string sourceDir, string destDir, bool overwrite = true)
         {
-            if (!Directory.Exists(sourceDir)) return;
+            if (!Directory.Exists(sourceDir))
+            {
+                return;
+            }
 
             Directory.CreateDirectory(destDir);
 
