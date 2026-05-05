@@ -164,7 +164,7 @@ namespace MoonLauncher
             _settings.LastNickname = cmbNicknames.Text;
             SaveSettings();
 
-            if(_settings.GameDir != _settings.LastGameDir)
+            if (_settings.GameDir != _settings.LastGameDir)
             {
                 await CopyDirectoryAsync(_settings.LastGameDir, _settings.GameDir);
                 _settings.LastGameDir = _settings.GameDir;
@@ -260,7 +260,7 @@ namespace MoonLauncher
         {
             using (var accountManagment = new AccountManagment(_settings))
             {
-                if(accountManagment.ShowDialog(this) == DialogResult.OK)
+                if (accountManagment.ShowDialog(this) == DialogResult.OK)
                 {
                     _settings = accountManagment.Settings;
                     SaveSettings();
@@ -314,6 +314,15 @@ namespace MoonLauncher
                     MessageBox.Show($"Error: {ex}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnInfo_Click(object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/Ketchup696/MLauncher-For-Minecraft",
+                UseShellExecute = true
+            });
         }
 
         public async Task CopyDirectoryAsync(string sourceDir, string destDir, bool overwrite = true)

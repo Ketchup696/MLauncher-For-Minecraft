@@ -41,6 +41,7 @@
             btnGameDir = new Button();
             btnAccountManagement = new Button();
             labelSelectAccount = new Label();
+            btnInfo = new Button();
             SuspendLayout();
             // 
             // btnPlay
@@ -160,11 +161,24 @@
             labelSelectAccount.TabIndex = 16;
             labelSelectAccount.Text = "Select account:";
             // 
+            // btnInfo
+            // 
+            btnInfo.FlatAppearance.BorderSize = 0;
+            btnInfo.FlatStyle = FlatStyle.Flat;
+            btnInfo.Image = Properties.Resources.infoIcon_32x32;
+            btnInfo.Location = new Point(12, 9);
+            btnInfo.Name = "btnInfo";
+            btnInfo.Size = new Size(32, 32);
+            btnInfo.TabIndex = 17;
+            btnInfo.UseVisualStyleBackColor = true;
+            btnInfo.Click += btnInfo_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(495, 334);
+            Controls.Add(btnInfo);
             Controls.Add(labelSelectAccount);
             Controls.Add(btnAccountManagement);
             Controls.Add(btnGameDir);
@@ -201,5 +215,6 @@
         private Button btnGameDir;
         private Button btnAccountManagement;
         private Label labelSelectAccount;
+        private Button btnInfo;
     }
 }
