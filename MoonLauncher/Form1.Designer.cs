@@ -32,7 +32,7 @@
             btnPlay = new Button();
             LabelGameVersion = new Label();
             progressBar = new ProgressBar();
-            NameLauncher = new Label();
+            labelNameLauncher = new Label();
             btnSettings = new Button();
             cmbVersion = new ComboBox();
             statusLabel = new Label();
@@ -42,6 +42,7 @@
             btnAccountManagement = new Button();
             labelSelectAccount = new Label();
             btnInfo = new Button();
+            btnGameVersionManagment = new Button();
             SuspendLayout();
             // 
             // btnPlay
@@ -72,15 +73,15 @@
             progressBar.TabIndex = 4;
             progressBar.Visible = false;
             // 
-            // NameLauncher
+            // labelNameLauncher
             // 
-            NameLauncher.AutoSize = true;
-            NameLauncher.Font = new Font("Segoe UI", 11F);
-            NameLauncher.Location = new Point(159, 9);
-            NameLauncher.Name = "NameLauncher";
-            NameLauncher.Size = new Size(178, 20);
-            NameLauncher.TabIndex = 5;
-            NameLauncher.Text = "Minecraft Moon Launcher";
+            labelNameLauncher.AutoSize = true;
+            labelNameLauncher.Font = new Font("Segoe UI", 11F);
+            labelNameLauncher.Location = new Point(157, 15);
+            labelNameLauncher.Name = "labelNameLauncher";
+            labelNameLauncher.Size = new Size(178, 20);
+            labelNameLauncher.TabIndex = 5;
+            labelNameLauncher.Text = "Minecraft Moon Launcher";
             // 
             // btnSettings
             // 
@@ -122,7 +123,7 @@
             // 
             // btnDeleteVersion
             // 
-            btnDeleteVersion.Location = new Point(309, 55);
+            btnDeleteVersion.Location = new Point(406, 131);
             btnDeleteVersion.Name = "btnDeleteVersion";
             btnDeleteVersion.Size = new Size(50, 23);
             btnDeleteVersion.TabIndex = 13;
@@ -144,7 +145,7 @@
             // 
             // btnAccountManagement
             // 
-            btnAccountManagement.Location = new Point(170, 139);
+            btnAccountManagement.Location = new Point(171, 131);
             btnAccountManagement.Name = "btnAccountManagement";
             btnAccountManagement.Size = new Size(148, 23);
             btnAccountManagement.TabIndex = 15;
@@ -173,11 +174,25 @@
             btnInfo.UseVisualStyleBackColor = true;
             btnInfo.Click += btnInfo_Click;
             // 
+            // btnGameVersionManagment
+            // 
+            btnGameVersionManagment.FlatAppearance.BorderSize = 0;
+            btnGameVersionManagment.FlatStyle = FlatStyle.Flat;
+            btnGameVersionManagment.Font = new Font("Segoe UI", 15F);
+            btnGameVersionManagment.Image = Properties.Resources.ellipsis_32x32;
+            btnGameVersionManagment.Location = new Point(305, 49);
+            btnGameVersionManagment.Name = "btnGameVersionManagment";
+            btnGameVersionManagment.Size = new Size(33, 34);
+            btnGameVersionManagment.TabIndex = 18;
+            btnGameVersionManagment.UseVisualStyleBackColor = true;
+            btnGameVersionManagment.Click += btnGameVersionManagment_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
             ClientSize = new Size(495, 334);
+            Controls.Add(btnGameVersionManagment);
             Controls.Add(btnInfo);
             Controls.Add(labelSelectAccount);
             Controls.Add(btnAccountManagement);
@@ -187,7 +202,7 @@
             Controls.Add(statusLabel);
             Controls.Add(cmbVersion);
             Controls.Add(btnSettings);
-            Controls.Add(NameLauncher);
+            Controls.Add(labelNameLauncher);
             Controls.Add(progressBar);
             Controls.Add(LabelGameVersion);
             Controls.Add(btnPlay);
@@ -206,7 +221,7 @@
         private Button btnPlay;
         private Label LabelGameVersion;
         private ProgressBar progressBar;
-        private Label NameLauncher;
+        private Label labelNameLauncher;
         private Button btnSettings;
         private ComboBox cmbVersion;
         private Label statusLabel;
@@ -216,5 +231,6 @@
         private Button btnAccountManagement;
         private Label labelSelectAccount;
         private Button btnInfo;
+        private Button btnGameVersionManagment;
     }
 }

@@ -49,9 +49,7 @@ namespace MoonLauncher
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (Settings == null)
-            {
                 Settings = new LauncherSettings();
-            }
 
             Settings.AllocatedMemoryGB = (int)numMemory.Value;
 

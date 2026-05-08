@@ -23,15 +23,11 @@ namespace MoonLauncher
 {
     public partial class Form1 : Form
     {
-        private string defaultNickname = "Player";
-
         private LauncherSettings _settings;
         private readonly string _settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MoonLauncher");
         private readonly string _settingsFile;
 
         private MinecraftLauncher _launcher;
-
-        private string defaultGameDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".minecraft");
 
         public Form1()
         {
@@ -39,9 +35,8 @@ namespace MoonLauncher
             btnPlay.Enabled = false;
 
             if (!Directory.Exists(_settingsFolder))
-            {
                 Directory.CreateDirectory(_settingsFolder);
-            }
+
             _settingsFile = Path.Combine(_settingsFolder, "settings.json");
 
             LoadSettings();
@@ -90,13 +85,13 @@ namespace MoonLauncher
             if (_settings.SavedNicknames == null || _settings.SavedNicknames.Count == 0)
             {
                 _settings.SavedNicknames = new List<string>();
-                _settings.SavedNicknames.Add(defaultNickname);
+                _settings.SavedNicknames.Add(_﻿StaticRequests.defaultNickname);
                 SaveSettings();
             }
 
             if (string.IsNullOrEmpty(_settings.GameDir))
             {
-                _settings.GameDir = defaultGameDir;
+                _settings.GameDir = _﻿StaticRequests.defaultGameDir;
                 SaveSettings();
             }
 
@@ -117,6 +112,8 @@ namespace MoonLauncher
         private async void Form1_Load(object sender, EventArgs e)
         {
             AutoUpdater.Start("https://raw.githubusercontent.com/Ketchup696/MLauncher-For-Minecraft/refs/heads/master/update.xml");
+
+            labelNameLauncher.Text = $"{_﻿StaticRequests.launcherName} {_﻿StaticRequests.launcherVersion}";
 
             LoadVersionListAsync();
         }
@@ -140,9 +137,7 @@ namespace MoonLauncher
                 else
                 {
                     if (releaseVersions.Count > 0)
-                    {
                         cmbVersion.SelectedIndex = 0;
-                    }
                 }
             }
             catch
@@ -266,12 +261,22 @@ namespace MoonLauncher
                     SaveSettings();
                     string nullNickname = cmbNicknames.Text;
                     if (string.IsNullOrEmpty(nullNickname))
-                    {
-                        cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
-                    }
+                        cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? _﻿StaticRequests.defaultNickname;
                     cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = _settings.SavedNicknames;
-                    cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? defaultNickname;
+                    cmbNicknames.Text = _settings.SavedNicknames.FirstOrDefault() ?? _﻿StaticRequests.defaultNickname;
+                }
+            }
+        }
+
+        private void btnGameVersionManagment_Click(object sender, EventArgs e)
+        {
+            using (var gameVersionManagment = new GameVersionManagment(_settings))
+            {
+                if (gameVersionManagment.ShowDialog(this) == DialogResult.OK)
+                {
+                    _settings = gameVersionManagment.Settings;
+                    SaveSettings();
                 }
             }
         }
@@ -328,9 +333,7 @@ namespace MoonLauncher
         public async Task CopyDirectoryAsync(string sourceDir, string destDir, bool overwrite = true)
         {
             if (!Directory.Exists(sourceDir))
-            {
                 return;
-            }
 
             Directory.CreateDirectory(destDir);
 

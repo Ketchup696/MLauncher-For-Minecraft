@@ -17,7 +17,6 @@ namespace MoonLauncher
         private List<string> newSavedAccounts = new();
         private List<string> newDeleteAccounts = new();
 
-        private string defaultNickname = "Player";
         public AccountManagment(LauncherSettings settings)
         {
             InitializeComponent();
@@ -40,7 +39,7 @@ namespace MoonLauncher
 
             if (string.IsNullOrWhiteSpace(txtNickname))
             {
-                cmbNicknames.SelectedItem = defaultNickname;
+                cmbNicknames.SelectedItem = _﻿StaticRequests.defaultNickname;
             }
             else
             {
@@ -67,9 +66,9 @@ namespace MoonLauncher
 
                     if (allAccounts.Count == 0)
                     {
-                        allAccounts.Add(defaultNickname);
-                        if (!newSavedAccounts.Contains(defaultNickname))
-                            newSavedAccounts.Add(defaultNickname);
+                        allAccounts.Add(_﻿StaticRequests.defaultNickname);
+                        if (!newSavedAccounts.Contains(_﻿StaticRequests.defaultNickname))
+                            newSavedAccounts.Add(_﻿StaticRequests.defaultNickname);
                     }
                     cmbNicknames.DataSource = null;
                     cmbNicknames.DataSource = allAccounts;
